@@ -269,7 +269,7 @@ resource "azurerm_linux_virtual_machine" "app-vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = file("~/.ssh/id_rsa")
   }
 
   os_disk {
