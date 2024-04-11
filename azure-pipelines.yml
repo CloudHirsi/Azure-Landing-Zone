@@ -8,7 +8,9 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    
+    - checkout: self
+      clean: true
+
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: 'latest'
@@ -28,7 +30,7 @@ stages:
         provider: 'azurerm'
         command: 'init'
         backendServiceArm: Azure
-        backendAzureRmResourceGroupName: 'cloud-shell-storage-eastus'
+        backendAzureRmResourceGroupName: 'tfstate'
         backendAzureRmStorageAccountName: 'tfbackend7890'
         backendAzureRmContainerName: 'tfbackend'
         backendAzureRmKey: 'prod.terraform.tfstate'
