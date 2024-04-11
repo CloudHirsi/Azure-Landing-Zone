@@ -18,8 +18,8 @@ stages:
       inputs:
         script: |
           sudo apt-get install rpm
-          wget https://github.com/aquasecurity/trivy/releases/download/v${{ parameters.trivyVersion }}/trivy_${{ parameters.trivyVersion }}_Linux-64bit.deb
-          sudo dpkg -i trivy_${{ parameters.trivyVersion }}_Linux-64bit.deb
+           wget https://github.com/aquasecurity/trivy/releases/download/v0.20.0/trivy_0.20.0_Linux-64bit.deb
+          sudo dpkg -i trivy_0.20.0_Linux-64bit.deb
           trivy -v
 
     - task: TerraformTaskV4@4
@@ -37,13 +37,15 @@ stages:
       displayName: 'LOW/MED - Trivy vulnerability scanner in IaC mode'
       inputs:
         script: |
-          trivy config --severity LOW,MEDIUM --exit-code 0 $(Agent.BuildDirectory)/src/${{ parameters.root_directory }}
+          trivy config --severity LOW,MEDIUM --exit-code 0 $(Agent.BuildDirectory)/src/*.tf
+
 
     - task: CmdLine@2
       displayName: 'HIGH/CRIT - Trivy vulnerability scanner in IaC mode'
       inputs:
         script: |
-          trivy config --severity HIGH,CRITICAL --exit-code 1 $(Agent.BuildDirectory)/src/${{ parameters.root_directory }}
+          trivy config --severity HIGH,CRITICAL --exit-code 1 $(Agent.BuildDirectory)/src/*.tf
+
     - task: TerraformTaskV4@4
       displayName: Tf plan
       inputs:
