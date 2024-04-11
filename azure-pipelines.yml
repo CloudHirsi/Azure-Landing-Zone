@@ -1,0 +1,74 @@
+trigger: 
+- main
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+    - task: CmdLine@2
+      displayName: 'Download and Install Trivy vulnerability scanner'
+      inputs:
+        script: |
+          sudo apt-get install rpm
+          wget https://github.com/aquasecurity/trivy/releases/download/v${{ parameters.trivyVersion }}/trivy_${{ parameters.trivyVersion }}_Linux-64bit.deb
+          sudo dpkg -i trivy_${{ parameters.trivyVersion }}_Linux-64bit.deb
+          trivy -v
+
+    - task: TerraformTaskV4@4
+      displayName: Tf init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: Azure
+        backendAzureRmResourceGroupName: 'cloud-shell-storage-eastus'
+        backendAzureRmStorageAccountName: 'tfbackend7890'
+        backendAzureRmContainerName: 'tfbackend'
+        backendAzureRmKey: 'prod.terraform.tfstate'
+
+    - task: CmdLine@2
+      displayName: 'LOW/MED - Trivy vulnerability scanner in IaC mode'
+      inputs:
+        script: |
+          trivy config --severity LOW,MEDIUM --exit-code 0 $(Agent.BuildDirectory)/src/${{ parameters.root_directory }}
+
+    - task: CmdLine@2
+      displayName: 'HIGH/CRIT - Trivy vulnerability scanner in IaC mode'
+      inputs:
+        script: |
+          trivy config --severity HIGH,CRITICAL --exit-code 1 $(Agent.BuildDirectory)/src/${{ parameters.root_directory }}
+    - task: TerraformTaskV4@4
+      displayName: Tf plan
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        commandOptions: '-out $(Build.SourcesDirectory)/tfplanfile'
+        environmentServiceNameAzureRM: Azure
+            
+    - task: CopyFiles@2
+      displayName: 'Copy Files to Staging'
+      inputs:
+        SourceFolder: '$(Agent.BuildDirectory)/src'
+        Contents: 'Terraform/**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: ArchiveFiles@2
+      displayName: Archive files
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(Build.BuildId)-build'
+        publishLocation: 'Container'
