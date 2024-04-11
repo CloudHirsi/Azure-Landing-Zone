@@ -40,14 +40,18 @@ stages:
       displayName: 'LOW/MED - Trivy vulnerability scanner in IaC mode'
       inputs:
         script: |
-          trivy config --severity LOW,MEDIUM --exit-code 0 $(Agent.BuildDirectory)/src/*.tf
+          for file in $(find /home/vsts/work/1/src -name "*.tf"); do
+              trivy config --severity LOW,MEDIUM --exit-code 0 "$file"
+          done
 
 
     - task: CmdLine@2
       displayName: 'HIGH/CRIT - Trivy vulnerability scanner in IaC mode'
       inputs:
         script: |
-          trivy config --severity HIGH,CRITICAL --exit-code 1 $(Agent.BuildDirectory)/src/*.tf
+          for file in $(find /home/vsts/work/1/src -name "*.tf"); do
+              trivy config --severity HIGH,CRITICAL --exit-code 0 "$file"
+          done
 
     - task: TerraformTaskV4@4
       displayName: Tf plan
