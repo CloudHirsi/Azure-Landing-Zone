@@ -19,6 +19,10 @@ variable "administrator_login" {
 
 }
 
+variable "ssh-key" {
+
+}
+
 variable "administrator_login_password" {
 
 }
