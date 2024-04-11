@@ -5,8 +5,8 @@ resource "azurerm_resource_group" "platform_identity_rg" {
   location = "East US"
 }
 
-resource "azurerm_key_vault" "project-keyvault7890" {
-  name                        = "project-keyvault7890"
+resource "azurerm_key_vault" "project-keyvault78907" {
+  name                        = "project-keyvault78907"
   location                    = azurerm_resource_group.platform_identity_rg.location
   resource_group_name         = azurerm_resource_group.platform_identity_rg.name
   enabled_for_disk_encryption = true
@@ -15,13 +15,13 @@ resource "azurerm_key_vault" "project-keyvault7890" {
 }
 
 resource "azurerm_key_vault_access_policy" "project-keyvault-accesspolicy" {
-  key_vault_id            = azurerm_key_vault.project-keyvault7890.id
+  key_vault_id            = azurerm_key_vault.project-keyvault78907.id
   tenant_id               = var.tenant_id
   object_id               = var.object_id
   secret_permissions      = ["Get", "List"]
   certificate_permissions = ["Get", "List"]
   key_permissions         = ["Get", "List"]
-  depends_on              = [azurerm_key_vault.project-keyvault7890]
+  depends_on              = [azurerm_key_vault.project-keyvault78907]
 }
 
 resource "azurerm_security_center_workspace" "project-security" {
@@ -115,7 +115,7 @@ resource "azurerm_subnet" "AzureFirewallSubnet" {
   name                 = "AzureFirewallSubnet"
   resource_group_name  = azurerm_resource_group.platform_network_rg.name
   virtual_network_name = azurerm_virtual_network.project-vnet.name
-  address_prefixes     = ["10.8.1.0/24"]
+  address_prefixes     = ["10.9.1.0/24"]
 }
 
 resource "azurerm_virtual_wan" "project-vwan" {
@@ -156,7 +156,7 @@ resource "azurerm_public_ip" "platform_public_ip" {
   name                = "project-public-ip"
   location            = azurerm_resource_group.platform_network_rg.location
   resource_group_name = azurerm_resource_group.platform_network_rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
   sku                 = "Standard"
 }
 
