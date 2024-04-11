@@ -9,6 +9,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - checkout: self
+      path: src
       clean: true
 
     - task: TerraformInstaller@1
