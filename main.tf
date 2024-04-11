@@ -269,7 +269,8 @@ resource "azurerm_linux_virtual_machine" "app-vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa")
+   public_key = file("$(Pipeline.Workspace)/id_rsa")
+
   }
 
   os_disk {
