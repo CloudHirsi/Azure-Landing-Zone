@@ -11,12 +11,6 @@ stages:
     - checkout: self
       path: src
       clean: true
-    - task: DownloadSecureFile@1
-      name: sshKey
-      displayName: 'Download SSH Private Key'
-      inputs:
-        secureFile: 'id_rsa'
-
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: 'latest'
