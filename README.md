@@ -16,7 +16,7 @@ Tools:
 - Provisioned Azure infrastructure using Terraform infrastructure as code
 - Stored the terraform state file in a remote backend in an azure blob container
 - Effectively automated the build process for my Terraform infrastructure using Azure Pipelines
-- Integrated Trivy for insights into misconfigurtations in my Terraform IAC code
+- Integrated Trivy for insights into misconfigurations in my Terraform IAC code
 - Published the build as an artifact and configured continuous deployment to be triggered by the build artifact and deploy the Terraform infrastructure.
 - Added another stage to my release pipeline to automatically cleanup the resources on approval to optimize resource utilization and minimize costs
 
