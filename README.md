@@ -18,7 +18,7 @@ Tools:
 - Effectively automated the build process for my Terraform infrastructure using Azure Pipelines
 - Integrated Trivy for insights into misconfigurations in my Terraform IAC code
 - Published the build as an artifact and configured continuous deployment to be triggered by the build artifact and deploy the Terraform infrastructure.
-- Added another stage to my release pipeline to automatically cleanup the resources on approval to optimize resource utilization and minimize costs
+- Added another stage to my release pipeline to automatically cleanup the resources on approval to optimize resource utilization and minimize costs.
 
 ## **Terraform Configuration:**
 ![image](https://github.com/CloudHirsi/Azure-Landing-Zone/assets/153539293/3a103834-6cf4-463a-9f30-14160de49f9f)
